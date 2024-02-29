@@ -11,17 +11,6 @@ public class UsersModule : IModule
 {
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet(
-            "/getCurrentUser",
-            async (HttpContext context) =>
-            {
-                var userService = context.RequestServices.GetRequiredService<IUserService>();
-                var cancellationToken = context.RequestAborted;
-
-                return await userService.GetCurrentUser(cancellationToken);
-            }
-        );
-
         return endpoints;
     }
 

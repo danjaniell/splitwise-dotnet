@@ -31,6 +31,7 @@ public class UserService(
         using var result = await _httpClient
             .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
             .ConfigureAwait(false);
+        result.EnsureSuccessStatusCode();
 
         using var contentStream = await result.Content.ReadAsStreamAsync(cancellationToken);
         var response = await JsonSerializer.DeserializeAsync<UserResponse>(
