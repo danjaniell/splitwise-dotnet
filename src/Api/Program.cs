@@ -34,5 +34,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapWolverineEndpoints();
 app.MapEndpoints();
 return await app.RunOaktonCommands(args);
