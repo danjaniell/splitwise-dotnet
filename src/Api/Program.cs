@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Api.Core.Options;
-using Api.Dependencies;
+using Api.Extensions;
 using Oakton;
 using Wolverine;
 using Wolverine.Http;
