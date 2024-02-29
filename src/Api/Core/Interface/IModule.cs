@@ -2,6 +2,6 @@ namespace Api.Core.Interface;
 
 public interface IModule
 {
-    IServiceCollection RegisterModule(IServiceCollection builder);
+    IServiceCollection RegisterModule(IServiceCollection services);
     IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints);
 }
