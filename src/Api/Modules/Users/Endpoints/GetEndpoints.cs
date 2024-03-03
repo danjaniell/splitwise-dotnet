@@ -18,4 +18,17 @@ public static class GetEndpoints
             ? TypedResults.Ok(user)
             : TypedResults.NotFound();
     }
+
+    [WolverineGet("/getUser/{id}")]
+    public static async Task<Results<Ok<UserResponse>, NotFound>> GetCurrentUser(
+        int id,
+        HttpContext context,
+        IUserService userService
+    )
+    {
+        var cancellationToken = context.RequestAborted;
+        return await userService.GetUserById(id, cancellationToken) is UserResponse user
+            ? TypedResults.Ok(user)
+            : TypedResults.NotFound();
+    }
 }
