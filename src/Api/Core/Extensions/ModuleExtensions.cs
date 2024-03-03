@@ -1,6 +1,6 @@
-using Api.Core.Interface;
+using Api.Core.Interfaces;
 
-namespace Api.Extensions;
+namespace Api.Core.Extensions;
 
 public static class ModuleExtensions
 {

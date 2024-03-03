@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Api.Core.Extensions;
 using Api.Modules.Users.Core;
 using Api.Modules.Users.Core.DTO;
 using Api.Modules.Users.Ports;
@@ -29,8 +30,17 @@ public class UserService : IUserService
 
     public async Task<UserResponse> GetCurrentUser(CancellationToken cancellationToken)
     {
-        var request = CreateRequest($"{_apiUrl}/get_current_user", HttpMethod.Get);
-        var response = await GetResponseFromRequest<UserResponse>(request, cancellationToken)
+        var request = HttpRequestExtensions.CreateRequest(
+            $"{_apiUrl}/get_current_user",
+            HttpMethod.Get
+        );
+        var response = await HttpRequestExtensions
+            .GetObjectResponseFromRequest<UserResponse>(
+                request,
+                _httpClient,
+                _jsonSerializerOptions,
+                cancellationToken
+            )
             .ConfigureAwait(false);
 
         return response;
@@ -38,8 +48,17 @@ public class UserService : IUserService
 
     public async Task<UserResponse> GetUserById(int id, CancellationToken cancellationToken)
     {
-        var request = CreateRequest($"{_apiUrl}/get_user/{id}", HttpMethod.Get);
-        var response = await GetResponseFromRequest<UserResponse>(request, cancellationToken)
+        var request = HttpRequestExtensions.CreateRequest(
+            $"{_apiUrl}/get_user/{id}",
+            HttpMethod.Get
+        );
+        var response = await HttpRequestExtensions
+            .GetObjectResponseFromRequest<UserResponse>(
+                request,
+                _httpClient,
+                _jsonSerializerOptions,
+                cancellationToken
+            )
             .ConfigureAwait(false);
 
         return response;
@@ -51,7 +70,10 @@ public class UserService : IUserService
         CancellationToken cancellationToken
     )
     {
-        var request = CreateRequest($"{_apiUrl}/update_user/{id}", HttpMethod.Post);
+        var request = HttpRequestExtensions.CreateRequest(
+            $"{_apiUrl}/update_user/{id}",
+            HttpMethod.Post
+        );
         var response = await _httpClient.PostAsJsonAsync(
             request.RequestUri,
             userUpdate,
@@ -60,36 +82,5 @@ public class UserService : IUserService
         response.EnsureSuccessStatusCode();
 
         return response.IsSuccessStatusCode;
-    }
-
-    private async Task<T> GetResponseFromRequest<T>(
-        HttpRequestMessage request,
-        CancellationToken cancellationToken
-    )
-        where T : class, new()
-    {
-        var result = await _httpClient
-            .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
-            .ConfigureAwait(false);
-        result.EnsureSuccessStatusCode();
-
-        var contentStream = await result.Content.ReadAsStreamAsync(cancellationToken);
-
-        var response = await JsonSerializer.DeserializeAsync<T>(
-            contentStream,
-            _jsonSerializerOptions,
-            cancellationToken
-        );
-        if (result is null)
-        {
-            throw new JsonException("Failed to deserialize the JSON.");
-        }
-
-        return response!;
-    }
-
-    private static HttpRequestMessage CreateRequest(string path, HttpMethod httpMethod)
-    {
-        return new HttpRequestMessage(httpMethod, $"{path}");
     }
 }

@@ -1,13 +1,13 @@
 using System.Net.Http.Headers;
 using Api.Core.Interfaces;
 using Api.Core.Options;
-using Api.Modules.Users.Adapters;
-using Api.Modules.Users.Ports;
+using Api.Modules.Group.Adapters;
+using Api.Modules.Group.Ports;
 using Microsoft.Extensions.Options;
 
-namespace Api.Modules.Users;
+namespace Api.Modules.Group;
 
-public class UsersModule : IModule
+public class GroupModule : IModule
 {
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
@@ -20,8 +20,8 @@ public class UsersModule : IModule
         var options = serviceProvider.GetRequiredService<IOptions<SplitwiseOptions>>().Value;
 
         services
-            .AddScoped<IUserService, UserService>()
-            .AddHttpClient<IUserService, UserService>(
+            .AddScoped<IGroupService, GroupService>()
+            .AddHttpClient<IGroupService, GroupService>(
                 "SpltwiseClient",
                 x =>
                 {
